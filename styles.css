@@ -1976,27 +1976,89 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
 @media (max-width: 640px) {
   .container { width: min(100% - 28px, 1120px); }
   .site-header { padding: 14px; }
+  .brand-logo-wrap {
+    width: 46px;
+    height: 46px;
+  }
   .brand-name { max-width: 132px; line-height: 1.2; }
-  .hero { min-height: 92svh; padding: 112px 16px 38px; }
-  .hero::before { inset: 88px 14px 20px; }
+  .section-pad { padding: 58px 0; }
+  .hero {
+    min-height: auto;
+    padding: 96px 16px 28px;
+  }
+  .hero::before { inset: 82px 12px 16px; }
+  .hero-frame { gap: 22px; }
+  .hero .hero-kicker {
+    max-width: 300px;
+    margin-bottom: 12px;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+  .hero .hero-content h1 {
+    max-width: 360px;
+    margin-bottom: 16px;
+    font-size: clamp(46px, 15vw, 56px);
+    line-height: 0.9;
+  }
+  .hero-content p {
+    max-width: 330px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .hero-meta {
+    gap: 8px;
+    margin-top: 18px;
+  }
   .hero-card { display: none; }
-  .hero-marquee { margin-top: 34px; }
-  .hero-meta span { width: 100%; }
+  .hero-marquee {
+    width: 100%;
+    margin-top: 24px;
+  }
+  .hero-marquee div {
+    gap: 22px;
+    padding: 9px 0;
+  }
+  .hero-marquee span {
+    font-size: 10px;
+  }
+  .hero-meta span {
+    width: auto;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+  .hero-note {
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .hero-note span {
+    padding: 7px 10px;
+    font-size: 11px;
+  }
   .dwija-portrait {
     width: 100%;
-    min-height: 480px;
+    min-height: 420px;
   }
-  .page-hero { padding: 130px 0 58px; }
-  .portfolio-hero { padding: 128px 0 66px; }
-  .services-hero { padding: 128px 0 66px; }
-  .reviews-hero { padding: 128px 0 66px; }
-  .portfolio-hero-copy h1 { font-size: 44px; }
-  .services-hero-copy h1 { font-size: 44px; }
-  .reviews-hero-copy h1 { font-size: 44px; }
-  .portfolio-hero-actions .button { width: 100%; }
-  .services-hero-actions .button { width: 100%; }
-  .reviews-hero-actions .button { width: 100%; }
-  .portfolio-hero-stack { min-height: 420px; }
+  .page-hero { padding: 112px 0 50px; }
+  .portfolio-hero { padding: 112px 0 52px; }
+  .services-hero { padding: 112px 0 52px; }
+  .reviews-hero { padding: 112px 0 52px; }
+  .portfolio-hero-copy h1,
+  .services-hero-copy h1,
+  .reviews-hero-copy h1 {
+    font-size: 40px;
+    line-height: 0.96;
+  }
+  .portfolio-hero-copy p,
+  .services-hero-copy p,
+  .reviews-hero-copy p {
+    font-size: 16px;
+  }
+  .portfolio-hero-actions .button,
+  .services-hero-actions .button,
+  .reviews-hero-actions .button {
+    width: auto;
+  }
+  .portfolio-hero-stack { min-height: 360px; }
   .portfolio-hero-stack img:nth-child(1) {
     inset: 42px auto 0 0;
     width: 70%;
@@ -2019,13 +2081,13 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
     flex: 1 1 auto;
   }
   .instagram-heading .button {
-    width: 100%;
+    width: auto;
   }
   .instagram-profile-image {
     width: min(190px, 100%);
   }
   .instagram-live-copy h3 {
-    font-size: 40px;
+    font-size: 34px;
   }
   .instagram-feed {
     grid-template-columns: 1fr;
@@ -2051,7 +2113,7 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
   .portfolio-card.feature-card,
   .portfolio-card.tall-card {
     grid-column: auto;
-    min-height: 390px;
+    min-height: 330px;
   }
   .review-grid {
     grid-template-columns: 1fr;
@@ -2064,7 +2126,7 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
   }
   .review-card:not(.review-card-large) p,
   .review-card p {
-    font-size: 25px;
+    font-size: 22px;
   }
   .review-trust-grid article {
     min-height: auto;
@@ -2072,9 +2134,7 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
   .review-trust-grid span {
     margin-bottom: 34px;
   }
-  .services-hero-visual {
-    min-height: 520px;
-  }
+  .services-hero-visual { min-height: 420px; }
   .services-hero-visual::before {
     inset: 24px 0 72px 54px;
   }
@@ -2088,18 +2148,18 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
   .service-visual-main {
     inset: 0 0 auto auto;
     width: 78%;
-    height: 340px;
+    height: 280px;
   }
   .service-visual-secondary {
-    inset: 254px auto auto 0;
+    inset: 216px auto auto 0;
     width: 52%;
-    height: 210px;
+    height: 170px;
   }
   .services-hero-note {
     right: 0;
     bottom: 0;
     width: min(292px, 74%);
-    padding: 18px;
+    padding: 14px;
   }
   .services-hero-meta {
     grid-template-columns: repeat(2, 1fr);
@@ -2126,24 +2186,57 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
   .service-overview-grid span {
     margin-bottom: 32px;
   }
-  .page-hero h1 { font-size: 42px; }
-  .about-hero { padding: 124px 0 64px; }
+  .page-hero h1 { font-size: 38px; }
+  .about-hero { padding: 106px 0 52px; }
   .about-hero::before { display: none; }
-  .about-hero-copy h1 { font-size: 46px; }
-  .about-hero-portrait {
-    height: 520px;
-    border-width: 7px;
+  .about-hero-copy h1 {
+    font-size: 40px;
+    line-height: 0.96;
   }
-  .about-hero-actions .button { width: 100%; }
-  h1 { font-size: 44px; }
-  h2 { font-size: 34px; }
-  .hero-content p { font-size: 16px; }
-  .hero-actions, .button { width: 100%; }
+  .about-hero-portrait {
+    height: 440px;
+    border-width: 6px;
+  }
+  .about-hero-actions .button { width: auto; }
+  .about-hero-panel {
+    gap: 16px;
+    padding: 18px;
+  }
+  .about-hero-panel dl {
+    gap: 12px;
+  }
+  h1 { font-size: 40px; }
+  h2 { font-size: 32px; }
+  h3 { font-size: 28px; }
+  .hero-actions {
+    width: 100%;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .button {
+    min-height: 44px;
+    width: auto;
+    padding: 11px 16px;
+    font-size: 12px;
+  }
+  .hero-actions .button {
+    flex: 1 1 140px;
+    justify-content: center;
+  }
   .service-strip, .gallery, .stats, .inquiry-form, .service-menu { grid-template-columns: 1fr; }
-  .strip-item { min-height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+  .strip-item { min-height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 24px; }
   .image-pair { grid-template-columns: 1fr; }
   .image-pair img:last-child { margin-top: 0; }
-  .gallery figure, .gallery-expanded figure:nth-child(3n + 1) { min-height: 360px; }
+  .gallery figure, .gallery-expanded figure:nth-child(3n + 1) { min-height: 320px; }
+  .timeline-list article,
+  .service-panel,
+  blockquote,
+  .review-card,
+  .featured-review-card,
+  .reviews-cta-card,
+  .inquiry-form {
+    padding: 24px;
+  }
   .process li { grid-template-columns: 1fr; gap: 6px; }
   .inquiry-form .full, .inquiry-form button, .form-status { grid-column: auto; }
 }

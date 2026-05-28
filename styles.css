@@ -1139,6 +1139,65 @@ h3 { margin-bottom: 12px; font-family: var(--serif); font-size: 32px; font-weigh
   background:
     linear-gradient(180deg, #ebe7dc, var(--ivory) 42%, #fffdf7);
 }
+.portfolio-category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.portfolio-category-card {
+  position: relative;
+  min-height: 220px;
+  overflow: hidden;
+  border: 1px solid rgba(175, 151, 123, 0.46);
+  border-radius: 8px;
+  padding: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 253, 247, 0.96), rgba(220, 219, 208, 0.46)),
+    var(--ivory);
+  color: var(--charcoal);
+  text-align: left;
+  box-shadow: 0 24px 70px rgba(84, 62, 39, 0.09);
+  cursor: pointer;
+  transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
+}
+.portfolio-category-card::after {
+  content: "";
+  position: absolute;
+  right: -58px;
+  bottom: -78px;
+  width: 170px;
+  height: 170px;
+  border: 1px solid rgba(175, 151, 123, 0.34);
+  border-radius: 999px;
+}
+.portfolio-category-card:hover,
+.portfolio-category-card.active {
+  border-color: rgba(175, 151, 123, 0.86);
+  box-shadow: 0 26px 78px rgba(84, 62, 39, 0.14);
+  transform: translateY(-3px);
+}
+.portfolio-category-card span {
+  display: block;
+  margin-bottom: 32px;
+  color: var(--gold-deep);
+  font-family: var(--serif);
+  font-size: 34px;
+  line-height: 1;
+}
+.portfolio-category-card strong {
+  display: block;
+  max-width: 180px;
+  font-family: var(--serif);
+  font-size: 27px;
+  line-height: 1;
+}
+.portfolio-category-card p {
+  margin: 14px 0 0;
+  color: rgba(43, 33, 26, 0.64);
+  font-size: 14px;
+  line-height: 1.55;
+}
 .portfolio-section-heading {
   display: grid;
   grid-template-columns: minmax(0, 0.82fr) minmax(280px, 0.6fr);
@@ -2550,6 +2609,9 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
   .portfolio-masonry {
     grid-template-columns: repeat(6, 1fr);
   }
+  .portfolio-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .portfolio-card,
   .portfolio-card.feature-card {
     grid-column: span 3;
@@ -2751,12 +2813,22 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
   }
   .portfolio-hero-copy h1,
   .reviews-hero-copy h1 {
-    font-size: 40px;
-    line-height: 0.96;
+    font-size: 36px;
+    line-height: 1.02;
+  }
+  .portfolio-section-heading {
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+  .portfolio-section-heading h2 {
+    max-width: 340px;
+    font-size: 34px;
+    line-height: 1.02;
   }
   .portfolio-hero-copy p,
   .services-hero-copy p,
   .reviews-hero-copy p {
+    max-width: 330px;
     font-size: 16px;
   }
   .portfolio-hero-actions .button,
@@ -2764,19 +2836,19 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
   .reviews-hero-actions .button {
     width: auto;
   }
-  .portfolio-hero-stack { min-height: 360px; }
+  .portfolio-hero-stack { min-height: 320px; }
   .portfolio-hero-stack img:nth-child(1) {
-    inset: 42px auto 0 0;
-    width: 70%;
-    height: 330px;
+    inset: 38px auto 0 0;
+    width: 64%;
+    height: 292px;
   }
   .portfolio-hero-stack img:nth-child(2) {
-    width: 52%;
-    height: 230px;
+    width: 47%;
+    height: 206px;
   }
   .portfolio-hero-stack img:nth-child(3) {
-    width: 56%;
-    height: 200px;
+    width: 50%;
+    height: 178px;
   }
   .portfolio-filter-bar {
     position: static;
@@ -2785,6 +2857,26 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
   }
   .portfolio-filter-bar .filter-button {
     flex: 1 1 auto;
+  }
+  .portfolio-category-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .portfolio-category-card {
+    min-height: 0;
+    padding: 17px;
+  }
+  .portfolio-category-card span {
+    margin-bottom: 16px;
+    font-size: 25px;
+  }
+  .portfolio-category-card strong {
+    max-width: none;
+    font-size: 24px;
+  }
+  .portfolio-category-card p {
+    max-width: 310px;
+    font-size: 13px;
   }
   .instagram-heading .button {
     width: auto;

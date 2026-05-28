@@ -50,7 +50,12 @@ if (filterButtons.length && galleryItems.length) {
   setPortfolioFilter(validFilter);
 
   filterButtons.forEach((button) => {
-    button.addEventListener("click", () => setPortfolioFilter(button.dataset.filter));
+    button.addEventListener("click", () => {
+      setPortfolioFilter(button.dataset.filter);
+      if (button.closest(".portfolio-category-grid")) {
+        document.querySelector("#portfolio-gallery")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
   });
 }
 

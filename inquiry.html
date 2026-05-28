@@ -37,16 +37,97 @@
               <span>Burnaby, BC serving Greater Vancouver and destination clients</span>
             </div>
           </div>
-          <form class="inquiry-form" data-inquiry-form>
-            <label>Name<input name="name" type="text" autocomplete="name" required /></label>
-            <label>Email<input name="email" type="email" autocomplete="email" required /></label>
-            <label>Wedding or event date<input name="date" type="date" /></label>
-            <label>Location<input name="location" type="text" placeholder="Vancouver, Burnaby, Surrey..." /></label>
-            <label>Services required<select name="service"><option>Bridal makeup</option><option>Bridal hair and makeup</option><option>South Asian bridal</option><option>Soft glam / event</option><option>Bridal party</option><option>Editorial / photoshoot</option></select></label>
-            <label>Number of people<input name="party" type="number" min="1" placeholder="1" /></label>
-            <label>Ready time<input name="readyTime" type="time" /></label>
-            <label>Preferred contact<select name="contact"><option>Email</option><option>Instagram DM</option><option>Phone</option></select></label>
-            <label class="full">Notes, references, outfit details, and timeline<textarea name="notes" rows="6"></textarea></label>
+          <form class="inquiry-form inquiry-form-updated" data-inquiry-form>
+            <section class="form-section">
+              <div class="form-section-title">
+                <span>01</span>
+                <h3>Contact Information</h3>
+              </div>
+              <div class="form-fields">
+                <label>Full Name*<input name="name" type="text" autocomplete="name" required /></label>
+                <label>Email Address*<input name="email" type="email" autocomplete="email" required /></label>
+                <label class="full">Phone Number*<input name="phone" type="tel" autocomplete="tel" required /></label>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <div class="form-section-title">
+                <span>02</span>
+                <h3>Event Details</h3>
+              </div>
+              <div class="form-fields">
+                <label>Event Type*
+                  <select name="eventType" required>
+                    <option value="">Select event type</option>
+                    <option>Wedding</option>
+                    <option>Reception</option>
+                    <option>Engagement</option>
+                    <option>Photoshoot</option>
+                    <option>Special Event</option>
+                    <option>Other</option>
+                  </select>
+                </label>
+                <label>Event Date*<input name="date" type="date" required /></label>
+                <label>Time Needed To Be Ready By*<input name="readyTime" type="time" required /></label>
+                <label>Location / Getting Ready Location*<input name="location" type="text" autocomplete="street-address" placeholder="Venue, city, or getting-ready address" required /></label>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <div class="form-section-title">
+                <span>03</span>
+                <h3>Services</h3>
+              </div>
+              <div class="form-fields">
+                <div class="form-field full">
+                  <span class="field-label">Services Required*</span>
+                  <details class="multi-select" data-services-select>
+                    <summary><span data-services-summary>Select services</span></summary>
+                    <div class="multi-select-options">
+                      <label><input type="checkbox" name="services" value="Makeup Only" data-service-option />Makeup Only</label>
+                      <label><input type="checkbox" name="services" value="Hairstyling Only" data-service-option />Hairstyling Only</label>
+                      <label><input type="checkbox" name="services" value="Hair + Makeup" data-service-option />Hair + Makeup</label>
+                      <label><input type="checkbox" name="services" value="Bridesmaids Makeup" data-service-option />Bridesmaids Makeup</label>
+                      <label><input type="checkbox" name="services" value="Bridesmaids Hairstyling" data-service-option />Bridesmaids Hairstyling</label>
+                      <label><input type="checkbox" name="services" value="Family Makeup & Hairstyling" data-service-option />Family Makeup & Hairstyling</label>
+                      <label><input type="checkbox" name="services" value="Saree or Dupatta Draping" data-service-option />Saree or Dupatta Draping</label>
+                      <label><input type="checkbox" name="services" value="Trial Session" data-service-option />Trial Session</label>
+                    </div>
+                  </details>
+                </div>
+                <label class="full">Number of People Requiring Services*<input name="party" type="text" placeholder="Example: Bride + 3 bridesmaids" required /></label>
+                <fieldset class="form-field full choice-field">
+                  <legend>Trial Needed?*</legend>
+                  <div class="choice-group">
+                    <label><input type="radio" name="trialNeeded" value="Yes" required />Yes</label>
+                    <label><input type="radio" name="trialNeeded" value="No" />No</label>
+                    <label><input type="radio" name="trialNeeded" value="Maybe" />Maybe</label>
+                  </div>
+                </fieldset>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <div class="form-section-title">
+                <span>04</span>
+                <h3>Additional Information</h3>
+              </div>
+              <div class="form-fields">
+                <label>How Did You Hear About Me?
+                  <select name="heardFrom">
+                    <option value="">Select one</option>
+                    <option>Instagram</option>
+                    <option>Google</option>
+                    <option>Referral</option>
+                    <option>Pinterest</option>
+                    <option>Wedding Vendor</option>
+                    <option>Other</option>
+                  </select>
+                </label>
+                <label class="full">Additional Notes / Inspiration Details<textarea name="notes" rows="5" placeholder="Share inspiration, outfit details, timing notes, or anything helpful."></textarea></label>
+              </div>
+            </section>
+
             <button class="button button-dark" type="submit">Prepare email inquiry</button>
             <p class="form-status" data-form-status aria-live="polite"></p>
           </form>
@@ -54,7 +135,7 @@
       </section>
     </main>
     <footer class="site-footer"><div class="container footer-grid"><div><span class="brand-logo-wrap"><img class="brand-logo" src="assets/defined-by-dwija-logo-clean.png" alt="" /></span><p>Defined by Dwija</p></div><div><a href="about.html">About</a><a href="portfolio.html">Portfolio</a><a href="services.html">Services</a><a class="nav-cta" href="inquiry.html">Inquire</a></div><div><p>Vancouver Bridal Makeup Artist</p><p>Burnaby, Vancouver, Surrey and Greater Vancouver</p></div></div></footer>
-    <script src="script.js"></script>
+    <script src="script.js?v=20260528"></script>
   </body>
 </html>
 

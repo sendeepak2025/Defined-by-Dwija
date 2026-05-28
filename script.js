@@ -5,6 +5,9 @@ const filterButtons = document.querySelectorAll("[data-filter]");
 const galleryItems = document.querySelectorAll(".gallery figure");
 const inquiryForm = document.querySelector("[data-inquiry-form]");
 const formStatus = document.querySelector("[data-form-status]");
+const servicesSelect = document.querySelector("[data-services-select]");
+const servicesSummary = document.querySelector("[data-services-summary]");
+const serviceOptions = document.querySelectorAll("[data-service-option]");
 const lightbox = document.querySelector("[data-lightbox-modal]");
 const lightboxImage = document.querySelector("[data-lightbox-image]");
 const lightboxClose = document.querySelector("[data-lightbox-close]");
@@ -84,30 +87,64 @@ if (lightbox && lightboxClose) {
   });
 }
 
+const selectedServices = () => [...serviceOptions].filter((item) => item.checked).map((item) => item.value);
+
+const updateServicesSummary = () => {
+  if (!servicesSummary) return;
+  const selected = selectedServices();
+  servicesSummary.textContent = selected.length ? selected.join(", ") : "Select services";
+};
+
+if (serviceOptions.length) {
+  serviceOptions.forEach((option) => option.addEventListener("change", updateServicesSummary));
+  updateServicesSummary();
+}
+
 if (inquiryForm) {
   inquiryForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
     const data = new FormData(inquiryForm);
+    const services = selectedServices();
+
+    if (!services.length) {
+      if (formStatus) formStatus.textContent = "Please select at least one service required.";
+      if (servicesSelect) servicesSelect.open = true;
+      return;
+    }
+
     const name = data.get("name") || "";
     const subject = encodeURIComponent(`Defined by Dwija inquiry from ${name}`);
     const body = encodeURIComponent(
       [
-        `Name: ${name}`,
-        `Email: ${data.get("email") || ""}`,
-        `Wedding/Event Date: ${data.get("date") || ""}`,
-        `Location: ${data.get("location") || ""}`,
-        `Services Required: ${data.get("service") || ""}`,
-        `Number of People: ${data.get("party") || ""}`,
-        `Ready Time: ${data.get("readyTime") || ""}`,
-        `Preferred Contact: ${data.get("contact") || ""}`,
+        "Contact Information",
+        `Full Name: ${name}`,
+        `Email Address: ${data.get("email") || ""}`,
+        `Phone Number: ${data.get("phone") || ""}`,
         "",
-        "Notes:",
+        "Event Details",
+        `Event Type: ${data.get("eventType") || ""}`,
+        `Event Date: ${data.get("date") || ""}`,
+        `Time Needed To Be Ready By: ${data.get("readyTime") || ""}`,
+        `Location / Getting Ready Location: ${data.get("location") || ""}`,
+        "",
+        "Services",
+        `Services Required: ${services.join(", ")}`,
+        `Number of People Requiring Services: ${data.get("party") || ""}`,
+        `Trial Needed: ${data.get("trialNeeded") || ""}`,
+        "",
+        "Additional Information",
+        `How Did You Hear About Me: ${data.get("heardFrom") || ""}`,
+        "",
+        "Additional Notes / Inspiration Details:",
         data.get("notes") || "",
       ].join("\n")
     );
 
     window.location.href = `mailto:hello@definedbydwija.com?subject=${subject}&body=${body}`;
-    if (formStatus) formStatus.textContent = "Your email app should open with the inquiry details prepared.";
+    if (formStatus) {
+      formStatus.textContent =
+        "Thank you for reaching out to Defined by Dwija. We'll review your inquiry and get back to you within 24-48 hours.";
+    }
   });
 }

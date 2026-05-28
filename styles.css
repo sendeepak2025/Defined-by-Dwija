@@ -684,6 +684,7 @@ h3 { margin-bottom: 12px; font-family: var(--serif); font-size: 32px; font-weigh
 
 .section-heading { max-width: 780px; }
 .editorial-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; grid-template-rows: repeat(2, 330px); gap: 16px; margin-top: 34px; }
+.featured-work .editorial-grid { margin-top: 0; }
 .editorial-card { position: relative; overflow: hidden; border-radius: 8px; background: var(--sand); }
 .editorial-card.tall { grid-row: span 2; }
 .editorial-card img { transition: transform 500ms ease; }

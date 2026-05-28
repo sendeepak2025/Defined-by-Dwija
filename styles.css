@@ -607,6 +607,62 @@ h3 { margin-bottom: 12px; font-family: var(--serif); font-size: 32px; font-weigh
   font-weight: 700;
   text-transform: uppercase;
 }
+.about-story-hero .about-hero-copy h1 {
+  max-width: 680px;
+}
+.about-story-section {
+  background: var(--ivory);
+}
+.about-story-grid,
+.about-philosophy-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.7fr) minmax(0, 1fr);
+  gap: clamp(42px, 7vw, 92px);
+  align-items: center;
+}
+.about-story-media figure {
+  position: relative;
+  height: min(680px, 78vh);
+  min-height: 520px;
+  margin: 0;
+  overflow: hidden;
+  border: 7px solid rgba(255, 253, 247, 0.86);
+  border-radius: 8px;
+  background: var(--paper);
+  box-shadow:
+    0 28px 90px rgba(43, 33, 26, 0.14),
+    0 0 0 1px rgba(175, 151, 123, 0.28);
+}
+.about-story-media figure::after {
+  position: absolute;
+  inset: 12px;
+  content: "";
+  border: 1px solid rgba(220, 219, 208, 0.78);
+  pointer-events: none;
+}
+.about-story-media img {
+  object-position: center 22%;
+}
+.about-story-copy h2,
+.about-philosophy-grid h2 {
+  max-width: 720px;
+}
+.about-story-copy p,
+.about-philosophy-copy p {
+  color: rgba(43, 33, 26, 0.72);
+  font-size: 17px;
+}
+.about-philosophy-section {
+  border-top: 1px solid var(--gold-line);
+  border-bottom: 1px solid var(--gold-line);
+}
+.about-philosophy-copy {
+  border-left: 1px solid var(--gold-line);
+  padding-left: clamp(24px, 4vw, 54px);
+}
+.about-cta-section {
+  background: var(--ivory);
+}
 .page-hero-grid, .split-intro, .experience-grid, .inquiry-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
@@ -1955,6 +2011,15 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
     padding: 12px 14px;
   }
   .page-hero-grid, .split-intro, .about-grid, .experience-grid, .inquiry-grid, .timeline, .service-detail-grid, .seo-feature-grid, .about-faq-grid { grid-template-columns: 1fr; }
+  .about-story-grid,
+  .about-philosophy-grid {
+    grid-template-columns: 1fr;
+  }
+  .about-philosophy-copy {
+    border-left: 0;
+    border-top: 1px solid var(--gold-line);
+    padding: 24px 0 0;
+  }
   .instagram-heading {
     grid-template-columns: 1fr;
     align-items: start;
@@ -2317,6 +2382,15 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
   }
   .about-hero-panel dl {
     gap: 12px;
+  }
+  .about-story-media figure {
+    height: 420px;
+    min-height: 420px;
+    border-width: 6px;
+  }
+  .about-story-copy p,
+  .about-philosophy-copy p {
+    font-size: 16px;
   }
   h1 { font-size: 40px; }
   h2 { font-size: 32px; }

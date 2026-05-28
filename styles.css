@@ -1474,7 +1474,7 @@ h3 { margin-bottom: 12px; font-family: var(--serif); font-size: 32px; font-weigh
 }
 .service-overview-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 18px;
 }
 .service-package-card {
@@ -1511,7 +1511,7 @@ h3 { margin-bottom: 12px; font-family: var(--serif); font-size: 32px; font-weigh
 }
 .service-package-card figure {
   position: relative;
-  height: clamp(230px, 22vw, 310px);
+  height: clamp(220px, 18vw, 285px);
   margin: 0;
   overflow: hidden;
   background: var(--sand);
@@ -1534,9 +1534,9 @@ h3 { margin-bottom: 12px; font-family: var(--serif); font-size: 32px; font-weigh
 }
 .service-package-body {
   display: flex;
-  min-height: 286px;
+  min-height: 292px;
   flex-direction: column;
-  padding: 24px;
+  padding: 22px;
 }
 .service-package-body span {
   display: block;
@@ -1548,7 +1548,7 @@ h3 { margin-bottom: 12px; font-family: var(--serif); font-size: 32px; font-weigh
 }
 .service-package-body h3 {
   margin-bottom: 14px;
-  font-size: clamp(30px, 2.25vw, 38px);
+  font-size: clamp(27px, 2vw, 34px);
   line-height: 1.02;
 }
 .service-package-body p {

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /inquiry.html
+
+Sitemap: https://definedbydwija.com/sitemap.xml

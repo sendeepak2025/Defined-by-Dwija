@@ -49,7 +49,34 @@ document.addEventListener("DOMContentLoaded", () => {
     revealElements.forEach((el) => revealObserver.observe(el));
   }
 
-  // 4. Portfolio Filters & Animations
+  // 4. Portfolio Gallery, Filters & Animations
+  const renderPortfolioGallery = () => {
+    const gallery = document.querySelector("[data-portfolio-gallery]");
+    if (!gallery || !Array.isArray(window.portfolioItems)) return;
+
+    const escapeHTML = (value) =>
+      String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+
+    gallery.innerHTML = window.portfolioItems.map((item) => {
+      const layout = item.layout ? ` ${escapeHTML(item.layout)}` : "";
+      const title = escapeHTML(item.title);
+      const label = escapeHTML(item.label);
+      const alt = escapeHTML(item.alt || item.title);
+      const src = escapeHTML(item.src);
+      const category = escapeHTML(item.category);
+
+      return `<figure class="portfolio-card${layout}" data-category="${category}"><button type="button" data-lightbox aria-label="View larger image: ${title}"><img src="${src}" alt="${alt}" loading="lazy" decoding="async" /></button><figcaption><span>${label}</span><strong>${title}</strong></figcaption></figure>`;
+    }).join("");
+  };
+
+  renderPortfolioGallery();
+
   const filterButtons = document.querySelectorAll("[data-filter]");
   const galleryItems = document.querySelectorAll(".gallery figure");
   const setPortfolioFilter = (filter) => {
@@ -91,9 +118,36 @@ document.addEventListener("DOMContentLoaded", () => {
   // 5. Accordion for Services (Generic toggle)
   document.querySelectorAll(".accordion-trigger").forEach((trigger) => {
     trigger.addEventListener("click", () => {
-      trigger.closest(".service-panel").classList.toggle("open");
+      const panel = trigger.closest(".service-panel");
+      if (!panel) return;
+      const isOpening = !panel.classList.contains("open");
+
+      if (panel.classList.contains("pricing-panel")) {
+        document.querySelectorAll(".pricing-panel.open").forEach((openPanel) => {
+          if (openPanel === panel) return;
+          openPanel.classList.remove("open");
+          const openTrigger = openPanel.querySelector(".accordion-trigger");
+          openTrigger?.setAttribute("aria-expanded", "false");
+          const symbol = openTrigger?.querySelector("span");
+          if (symbol) symbol.textContent = "+";
+        });
+      }
+
+      panel.classList.toggle("open", isOpening);
+      trigger.setAttribute("aria-expanded", String(isOpening));
+      const symbol = trigger.querySelector("span");
+      if (symbol) symbol.textContent = isOpening ? "-" : "+";
     });
   });
+
+  const openServicePanelFromHash = () => {
+    const target = window.location.hash ? document.querySelector(window.location.hash) : null;
+    if (!target?.classList.contains("pricing-panel")) return;
+    const trigger = target.querySelector(".accordion-trigger");
+    if (!target.classList.contains("open")) trigger?.click();
+  };
+  openServicePanelFromHash();
+  window.addEventListener("hashchange", openServicePanelFromHash);
 
   // 6. Interactive FAQ Accordion
   const faqItems = document.querySelectorAll(".faq-item");

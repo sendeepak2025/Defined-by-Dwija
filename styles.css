@@ -691,12 +691,32 @@ h3 { margin-bottom: 12px; font-family: var(--serif); font-size: 32px; font-weigh
   font-size: 17px;
 }
 .about-philosophy-section {
+  position: relative;
+  overflow: hidden;
   border-top: 1px solid var(--gold-line);
   border-bottom: 1px solid var(--gold-line);
+  background:
+    radial-gradient(circle at 18% 22%, rgba(175, 151, 123, 0.16), transparent 32%),
+    linear-gradient(135deg, rgba(220, 219, 208, 0.58), rgba(255, 253, 247, 0.92));
+}
+.about-philosophy-section::before {
+  position: absolute;
+  inset: 34px clamp(20px, 5vw, 72px);
+  content: "";
+  border: 1px solid rgba(175, 151, 123, 0.22);
+  border-radius: 10px;
+  pointer-events: none;
 }
 .about-philosophy-copy {
   border-left: 1px solid var(--gold-line);
   padding-left: clamp(24px, 4vw, 54px);
+}
+.about-philosophy-grid {
+  position: relative;
+  z-index: 1;
+}
+.about-philosophy-grid h2 {
+  font-style: italic;
 }
 .about-cta-section {
   background: var(--ivory);
@@ -6231,6 +6251,12 @@ blockquote p { font-family: var(--serif); font-size: 25px; line-height: 1.3; }
 /* Push hero frame down a bit so masthead has clear space */
 .home-hero-v2 .hero-frame {
   padding-top: 36px;
+}
+.home-hero-v2 .hero-frame {
+  grid-template-columns: minmax(0, 1fr);
+}
+.home-hero-v2 .hero-content {
+  max-width: 780px;
 }
 
 @media (max-width: 980px) {

@@ -647,6 +647,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const heardFrom = data.get("heardFrom") || "";
       const notes = data.get("notes") || "";
       const payload = {
+        access_key: "10c1b2ac-afdd-4e1d-84d8-f67c76027d0f",
         subject: `Defined by Dwija inquiry from ${name || "website visitor"}`,
         from_name: "Defined by Dwija Website",
         name,
@@ -674,7 +675,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const response = await fetch("/api/inquiry", {
+        const response = await fetch("https://api.web3forms.com/submit", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

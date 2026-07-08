@@ -646,9 +646,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const trialNeeded = data.get("trialNeeded") || "";
       const heardFrom = data.get("heardFrom") || "";
       const notes = data.get("notes") || "";
-      const web3FormsAccessKey = "10c1b2ac-afdd-4e1d-84d8-f67c76027d0f";
       const payload = {
-        access_key: web3FormsAccessKey,
         subject: `Defined by Dwija inquiry from ${name || "website visitor"}`,
         from_name: "Defined by Dwija Website",
         name,
@@ -676,11 +674,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        if (!web3FormsAccessKey) {
-          throw new Error("Web3Forms access key is missing.");
-        }
-
-        const response = await fetch("https://api.web3forms.com/submit", {
+        const response = await fetch("/api/inquiry", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

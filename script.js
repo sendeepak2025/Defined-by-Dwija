@@ -78,28 +78,38 @@ document.addEventListener("DOMContentLoaded", () => {
   renderPortfolioGallery();
 
   const filterButtons = document.querySelectorAll("[data-filter]");
-  const galleryItems = document.querySelectorAll(".gallery figure");
+  const getPortfolioItems = () => Array.from(document.querySelectorAll("[data-portfolio-gallery] .portfolio-card"));
   const setPortfolioFilter = (filter) => {
-    filterButtons.forEach((item) => item.classList.toggle("active", item.dataset.filter === filter));
-    galleryItems.forEach((item) => {
-      const matches = filter === "all" || item.dataset.category === filter;
+    const activeFilter = filter || "all";
+    filterButtons.forEach((item) => {
+      const isActive = item.dataset.filter === activeFilter;
+      item.classList.toggle("active", isActive);
+      item.setAttribute("aria-pressed", String(isActive));
+    });
+
+    getPortfolioItems().forEach((item) => {
+      const categories = String(item.dataset.category || "").split(/\s+/).filter(Boolean);
+      const matches = activeFilter === "all" || categories.includes(activeFilter);
+      item.hidden = !matches;
+      item.classList.toggle("hidden", !matches);
+
       if (matches) {
-        item.classList.remove("hidden");
-        // Soft entrance transition
         item.style.opacity = "0";
         item.style.transform = "scale(0.96)";
-        setTimeout(() => {
+        window.setTimeout(() => {
           item.style.transition = "opacity 400ms ease, transform 400ms ease";
           item.style.opacity = "1";
           item.style.transform = "scale(1)";
-        }, 50);
+        }, 30);
       } else {
-        item.classList.add("hidden");
+        item.style.transition = "";
+        item.style.opacity = "";
+        item.style.transform = "";
       }
     });
   };
 
-  if (filterButtons.length && galleryItems.length) {
+  if (filterButtons.length && getPortfolioItems().length) {
     const params = new URLSearchParams(window.location.search);
     const initialFilter = params.get("filter") || "all";
     const validFilter = [...filterButtons].some((button) => button.dataset.filter === initialFilter) ? initialFilter : "all";
@@ -107,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     filterButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        setPortfolioFilter(button.dataset.filter);
+        setPortfolioFilter(button.dataset.filter || "all");
         if (button.closest(".portfolio-category-grid")) {
           document.querySelector("#portfolio-gallery")?.scrollIntoView({ behavior: "smooth", block: "start" });
         }
@@ -611,52 +621,92 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 12. Submit handler logic
-    inquiryForm.addEventListener("submit", (event) => {
+    inquiryForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const data = new FormData(inquiryForm);
       const services = selectedServices();
+      const formStatus = document.querySelector("[data-form-status]");
+      const submitButton = inquiryForm.querySelector(".submit-step-btn");
 
       if (!services.length) {
-        const formStatus = document.querySelector("[data-form-status]");
         if (formStatus) formStatus.textContent = "Please select at least one service required.";
         if (servicesSelect) servicesSelect.open = true;
         return;
       }
 
       const name = data.get("name") || "";
-      const subject = encodeURIComponent(`Defined by Dwija inquiry from ${name}`);
-      const body = encodeURIComponent(
-        [
-          "Contact Information",
-          `Full Name: ${name}`,
-          `Email Address: ${data.get("email") || ""}`,
-          `Phone Number: ${data.get("phone") || ""}`,
-          "",
-          "Event Details",
-          `Event Type: ${data.get("eventType") || ""}`,
-          `Event Date: ${data.get("date") || ""}`,
-          `Time Needed To Be Ready By: ${data.get("readyTime") || ""}`,
-          `Location / Getting Ready Location: ${data.get("location") || ""}`,
-          "",
-          "Services",
-          `Services Required: ${services.join(", ")}`,
-          `Number of People Requiring Services: ${data.get("party") || ""}`,
-          `Trial Needed: ${data.get("trialNeeded") || ""}`,
-          "",
-          "Additional Information",
-          `How Did You Hear About Me: ${data.get("heardFrom") || ""}`,
-          "",
-          "Additional Notes / Inspiration Details:",
-          data.get("notes") || "",
-        ].join("\n")
-      );
+      const email = data.get("email") || "";
+      const phone = data.get("phone") || "";
+      const eventType = data.get("eventType") || "";
+      const eventDate = data.get("date") || "";
+      const readyTime = data.get("readyTime") || "";
+      const location = data.get("location") || "";
+      const party = data.get("party") || "";
+      const trialNeeded = data.get("trialNeeded") || "";
+      const heardFrom = data.get("heardFrom") || "";
+      const notes = data.get("notes") || "";
+      const web3FormsAccessKey = "10c1b2ac-afdd-4e1d-84d8-f67c76027d0f";
+      const payload = {
+        access_key: web3FormsAccessKey,
+        subject: `Defined by Dwija inquiry from ${name || "website visitor"}`,
+        from_name: "Defined by Dwija Website",
+        name,
+        email,
+        phone,
+        "Event Date": eventDate,
+        "Event Type": eventType,
+        "Ready Time": readyTime,
+        "Location": location,
+        "Services Required": services.join(", "),
+        "People Requiring Services": party,
+        "Trial Needed": trialNeeded,
+        "Heard From": heardFrom || "Not provided",
+        "Notes": notes || "No additional notes provided.",
+        message: "New Defined by Dwija bridal and event inquiry. See the individual fields above for the complete quote request details.",
+      };
 
-      window.location.href = `mailto:hello@definedbydwija.com?subject=${subject}&body=${body}`;
-
-      const formStatus = document.querySelector("[data-form-status]");
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.dataset.originalText = submitButton.textContent;
+        submitButton.textContent = "Sending inquiry...";
+      }
       if (formStatus) {
-        formStatus.innerHTML = `<span style="color: var(--gold-deep); font-weight: 700;">Inquiry Prepared!</span> Thank you for reaching out to Defined by Dwija. Your email client should open shortly with the inquiry template. We'll review your details and get back to you within 24-48 hours.`;
+        formStatus.textContent = "Sending your inquiry...";
+      }
+
+      try {
+        if (!web3FormsAccessKey) {
+          throw new Error("Web3Forms access key is missing.");
+        }
+
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) throw new Error(result.message || "Inquiry could not be sent.");
+
+        if (formStatus) {
+          formStatus.innerHTML = `<span style="color: var(--gold-deep); font-weight: 700;">Inquiry sent.</span> Thank you for reaching out to Defined by Dwija. We'll review your details and get back to you within 24-48 hours.`;
+        }
+        inquiryForm.reset();
+        selectedServices().forEach(() => {});
+        if (servicesSelect) servicesSelect.querySelector("summary span").textContent = "Select services";
+      } catch (error) {
+        if (formStatus) {
+          formStatus.innerHTML = `We couldn't send the inquiry automatically. Please email <a href="mailto:jayvekariya2003@gmail.com">jayvekariya2003@gmail.com</a> directly.`;
+        }
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = submitButton.dataset.originalText || "Submit Email Inquiry";
+        }
       }
     });
   }

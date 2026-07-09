@@ -668,7 +668,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const eventType = normalizeField(data.get("eventType"), 80);
       const eventDate = normalizeField(data.get("date"), 20);
       const readyTime = normalizeField(data.get("readyTime"), 20);
-      const budget = normalizeField(data.get("budget"), 80);
       const location = normalizeField(data.get("location"), 220);
       const party = normalizeField(data.get("party"), 140);
       const trialNeeded = normalizeField(data.get("trialNeeded"), 20);
@@ -700,7 +699,6 @@ document.addEventListener("DOMContentLoaded", () => {
         eventType,
         eventDate,
         readyTime,
-        budget,
         location,
         services: services.map((service) => normalizeField(service, 80)),
         party,
@@ -718,8 +716,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (submitButton) {
         submitButton.disabled = true;
         submitButton.setAttribute("aria-busy", "true");
-        submitButton.dataset.originalText = submitButton.textContent;
-        submitButton.textContent = "Sending inquiry...";
+        submitButton.dataset.loading = "true";
+        submitButton.dataset.originalHtml = submitButton.innerHTML;
+        submitButton.innerHTML = '<span class="button-loader" aria-hidden="true"></span><span>Sending inquiry...</span>';
       }
       setFormStatus("Sending your inquiry...");
 
@@ -754,7 +753,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (submitButton) {
           submitButton.disabled = false;
           submitButton.removeAttribute("aria-busy");
-          submitButton.textContent = submitButton.dataset.originalText || "Submit Email Inquiry";
+          submitButton.removeAttribute("data-loading");
+          submitButton.innerHTML = submitButton.dataset.originalHtml || "Submit Email Inquiry";
+          delete submitButton.dataset.originalHtml;
         }
       }
     });

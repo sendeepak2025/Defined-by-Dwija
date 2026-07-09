@@ -649,7 +649,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const payload = {
         access_key: "10c1b2ac-afdd-4e1d-84d8-f67c76027d0f",
         subject: `Defined by Dwija inquiry from ${name || "website visitor"}`,
-        from_name: "Defined by Dwija Website",
+        from_name: "Defined by Dwija",
         name,
         email,
         phone,

@@ -1,7 +1,7 @@
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
 const WEBSITE_NAME = "Defined by Dwija";
 const TO_EMAIL = "jayvekariya2003@gmail.com";
-const FROM_EMAIL = "Defined by Dwija <hello@definedbydwija.com>";
+const FROM_EMAIL = "Defined by Dwija <onboarding@resend.dev>";
 const RESEND_TIMEOUT_MS = 9000;
 const MAX_PAYLOAD_BYTES = 12 * 1024;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;

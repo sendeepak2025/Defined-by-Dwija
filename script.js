@@ -621,85 +621,139 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 12. Submit handler logic
+    const INQUIRY_ENDPOINT = "/api/inquiry";
+    const SUBMIT_TIMEOUT_MS = 12000;
+    let inquirySubmitInProgress = false;
+
+    const normalizeField = (value, maxLength) =>
+      String(value || "")
+        .replace(/[\u0000-\u001F\u007F]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, maxLength);
+
+    const normalizeLongField = (value, maxLength) =>
+      String(value || "")
+        .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, " ")
+        .trim()
+        .slice(0, maxLength);
+
+    const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(value);
+    const isValidPhone = (value) => /^\+?[0-9()\-\s.]{7,24}$/.test(value) && value.replace(/\D/g, "").length >= 7;
+
+    const setFormStatus = (message, html = false) => {
+      const formStatus = document.querySelector("[data-form-status]");
+      if (!formStatus) return;
+      if (html) {
+        formStatus.innerHTML = message;
+      } else {
+        formStatus.textContent = message;
+      }
+    };
+
+    inquiryForm.dataset.startedAt = String(Date.now());
+
     inquiryForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
+      if (inquirySubmitInProgress) return;
+
       const data = new FormData(inquiryForm);
       const services = selectedServices();
-      const formStatus = document.querySelector("[data-form-status]");
       const submitButton = inquiryForm.querySelector(".submit-step-btn");
 
-      if (!services.length) {
-        if (formStatus) formStatus.textContent = "Please select at least one service required.";
-        if (servicesSelect) servicesSelect.open = true;
+      const name = normalizeField(data.get("name"), 120);
+      const email = normalizeField(data.get("email"), 160).toLowerCase();
+      const phone = normalizeField(data.get("phone"), 40);
+      const eventType = normalizeField(data.get("eventType"), 80);
+      const eventDate = normalizeField(data.get("date"), 20);
+      const readyTime = normalizeField(data.get("readyTime"), 20);
+      const budget = normalizeField(data.get("budget"), 80);
+      const location = normalizeField(data.get("location"), 220);
+      const party = normalizeField(data.get("party"), 140);
+      const trialNeeded = normalizeField(data.get("trialNeeded"), 20);
+      const heardFrom = normalizeField(data.get("heardFrom"), 80);
+      const notes = normalizeLongField(data.get("notes"), 1500);
+
+      const validationErrors = [];
+      if (!name) validationErrors.push("Please enter your full name.");
+      if (!email || !isValidEmail(email)) validationErrors.push("Please enter a valid email address.");
+      if (!phone || !isValidPhone(phone)) validationErrors.push("Please enter a valid phone number.");
+      if (!eventType) validationErrors.push("Please select an event type.");
+      if (!eventDate) validationErrors.push("Please select an event date.");
+      if (!readyTime) validationErrors.push("Please select the ready-by time.");
+      if (!location) validationErrors.push("Please enter the event or getting-ready location.");
+      if (!services.length) validationErrors.push("Please select at least one service required.");
+      if (!party) validationErrors.push("Please enter the number of people requiring services.");
+      if (!trialNeeded) validationErrors.push("Please choose whether a trial is needed.");
+
+      if (validationErrors.length) {
+        setFormStatus(validationErrors[0]);
+        if (!services.length && servicesSelect) servicesSelect.open = true;
         return;
       }
 
-      const name = data.get("name") || "";
-      const email = data.get("email") || "";
-      const phone = data.get("phone") || "";
-      const eventType = data.get("eventType") || "";
-      const eventDate = data.get("date") || "";
-      const readyTime = data.get("readyTime") || "";
-      const location = data.get("location") || "";
-      const party = data.get("party") || "";
-      const trialNeeded = data.get("trialNeeded") || "";
-      const heardFrom = data.get("heardFrom") || "";
-      const notes = data.get("notes") || "";
       const payload = {
-        access_key: "10c1b2ac-afdd-4e1d-84d8-f67c76027d0f",
-        subject: `Defined by Dwija inquiry from ${name || "website visitor"}`,
-        from_name: "Defined by Dwija",
         name,
         email,
         phone,
-        "Event Date": eventDate,
-        "Event Type": eventType,
-        "Ready Time": readyTime,
-        "Location": location,
-        "Services Required": services.join(", "),
-        "People Requiring Services": party,
-        "Trial Needed": trialNeeded,
-        "Heard From": heardFrom || "Not provided",
-        "Notes": notes || "No additional notes provided.",
-        message: "New Defined by Dwija bridal and event inquiry. See the individual fields above for the complete quote request details.",
+        eventType,
+        eventDate,
+        readyTime,
+        budget,
+        location,
+        services: services.map((service) => normalizeField(service, 80)),
+        party,
+        trialNeeded,
+        heardFrom: heardFrom || "Not provided",
+        notes: notes || "No additional notes provided.",
+        websiteName: "Defined by Dwija",
+        formStartedAt: Number(inquiryForm.dataset.startedAt || Date.now()),
       };
+
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), SUBMIT_TIMEOUT_MS);
+      inquirySubmitInProgress = true;
 
       if (submitButton) {
         submitButton.disabled = true;
+        submitButton.setAttribute("aria-busy", "true");
         submitButton.dataset.originalText = submitButton.textContent;
         submitButton.textContent = "Sending inquiry...";
       }
-      if (formStatus) {
-        formStatus.textContent = "Sending your inquiry...";
-      }
+      setFormStatus("Sending your inquiry...");
 
       try {
-        const response = await fetch("https://api.web3forms.com/submit", {
+        const response = await fetch(INQUIRY_ENDPOINT, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
           },
           body: JSON.stringify(payload),
+          signal: controller.signal,
         });
-        const result = await response.json();
 
+        const result = await response.json().catch(() => ({ success: false, message: "Unexpected server response." }));
         if (!response.ok || !result.success) throw new Error(result.message || "Inquiry could not be sent.");
 
-        if (formStatus) {
-          formStatus.innerHTML = `<span style="color: var(--gold-deep); font-weight: 700;">Inquiry sent.</span> Thank you for reaching out to Defined by Dwija. We'll review your details and get back to you within 24-48 hours.`;
-        }
+        setFormStatus(`<span style="color: var(--gold-deep); font-weight: 700;">Inquiry sent.</span> Thank you for reaching out to Defined by Dwija. We'll review your details and get back to you within 24-48 hours.`, true);
         inquiryForm.reset();
-        selectedServices().forEach(() => {});
-        if (servicesSelect) servicesSelect.querySelector("summary span").textContent = "Select services";
+        inquiryForm.dataset.startedAt = String(Date.now());
+        updateServicesSummary();
+        if (servicesSelect) servicesSelect.open = false;
       } catch (error) {
-        if (formStatus) {
-          formStatus.innerHTML = `We couldn't send the inquiry automatically. Please email <a href="mailto:jayvekariya2003@gmail.com">jayvekariya2003@gmail.com</a> directly.`;
-        }
+        const isTimeout = error.name === "AbortError";
+        const retryMessage = isTimeout
+          ? "The request timed out. Please try again in a moment, or email us directly."
+          : error.message || "We couldn't send the inquiry automatically. Please try again.";
+        setFormStatus(`${retryMessage} If it still fails, please email <a href="mailto:hello@definedbydwija.com">hello@definedbydwija.com</a> directly.`, true);
       } finally {
+        window.clearTimeout(timeoutId);
+        inquirySubmitInProgress = false;
         if (submitButton) {
           submitButton.disabled = false;
+          submitButton.removeAttribute("aria-busy");
           submitButton.textContent = submitButton.dataset.originalText || "Submit Email Inquiry";
         }
       }

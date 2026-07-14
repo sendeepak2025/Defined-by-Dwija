@@ -80,7 +80,7 @@ button, input, select, textarea { font: inherit; }
   height: 74%;
   object-fit: contain;
   transform: none;
-  filter: brightness(0) saturate(100%) invert(61%) sepia(11%) saturate(742%) hue-rotate(352deg) brightness(92%) contrast(88%);
+  filter: none;
 }
 .brand-name { font-size: 13px; text-transform: uppercase; }
 .primary-nav {

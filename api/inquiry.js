@@ -12,6 +12,7 @@ const RATE_LIMIT_MAX_REQUESTS = 5;
 const ALLOWED_ORIGINS = new Set([
   "https://definedbydwija.com",
   "https://www.definedbydwija.com",
+  "https://defined-by-dwija.vercel.app",
   "https://defined-by-dwija-iota.vercel.app",
   "http://localhost:4173",
   "http://127.0.0.1:4173",

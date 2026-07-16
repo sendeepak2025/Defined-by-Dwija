@@ -1,8 +1,10 @@
-const RESEND_ENDPOINT = "https://api.resend.com/emails";
 const WEBSITE_NAME = "Defined by Dwija";
 const TO_EMAIL = "jayvekariya2003@gmail.com";
-const FROM_EMAIL = "Defined by Dwija <onboarding@resend.dev>";
-const RESEND_TIMEOUT_MS = 9000;
+const EMAIL_API_ENDPOINT =
+  // process.env.INQUIRY_EMAIL_API_URL || "https://subconsciously-unsuppressible-precious.ngrok-free.dev/api/send";
+  process.env.INQUIRY_EMAIL_API_URL || "https://mail-shared.varnsolutions.com/api/send";
+const EMAIL_API_KEY = process.env.INQUIRY_EMAIL_API_KEY || "test-api-key-website1-12345";
+const EMAIL_API_TIMEOUT_MS = 9000;
 const MAX_PAYLOAD_BYTES = 12 * 1024;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
@@ -93,15 +95,6 @@ function normalizeText(value, maxLength, { multiline = false } = {}) {
     .slice(0, maxLength);
 }
 
-function escapeHtml(value) {
-  return String(value || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(email) && !/[\r\n]/.test(email);
 }
@@ -162,89 +155,31 @@ function validateAndSanitize(body) {
   return { data };
 }
 
-function buildRows(data) {
-  const rows = [
-    ["Name", data.name],
-    ["Email", data.email],
-    ["Phone", data.phone],
-    ["Event Type", data.eventType],
-    ["Event Date", data.eventDate],
-    ["Ready By", data.readyTime],
-    ["Event Location", data.location],
-    ["Services", data.services.join(", ")],
-    ["People Requiring Services", data.party],
-    ["Trial Needed", data.trialNeeded],
-    ["Heard From", data.heardFrom],
-    ["Additional Notes", data.notes],
-    ["Timestamp", new Date().toLocaleString("en-CA", { timeZone: "America/Vancouver", dateStyle: "medium", timeStyle: "short" })],
-    ["Website", data.websiteName],
-  ];
-
-  return rows
-    .map(([label, value]) => `
-      <tr>
-        <td style="padding:14px 16px;border-bottom:1px solid #e4d8c6;color:#6b5643;font:700 12px Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;vertical-align:top;width:34%;">${escapeHtml(label)}</td>
-        <td style="padding:14px 16px;border-bottom:1px solid #e4d8c6;color:#2b211a;font:16px Georgia,serif;line-height:1.45;vertical-align:top;">${escapeHtml(value)}</td>
-      </tr>`)
-    .join("");
-}
-
-function buildEmail(data) {
+function buildEmailPayload(data) {
   const subjectName = data.name.replace(/[\r\n]/g, " ").slice(0, 80);
   const subject = `Defined by Dwija inquiry from ${subjectName}`;
-  const text = [
-    `${WEBSITE_NAME} - Bridal Inquiry`,
-    "",
-    `Name: ${data.name}`,
-    `Email: ${data.email}`,
-    `Phone: ${data.phone}`,
-    `Event Type: ${data.eventType}`,
-    `Event Date: ${data.eventDate}`,
-    `Ready By: ${data.readyTime}`,
-    `Event Location: ${data.location}`,
-    `Services: ${data.services.join(", ")}`,
-    `People Requiring Services: ${data.party}`,
-    `Trial Needed: ${data.trialNeeded}`,
-    `Heard From: ${data.heardFrom}`,
-    `Additional Notes: ${data.notes}`,
-    `Timestamp: ${new Date().toISOString()}`,
-  ].join("\n");
 
-  const html = `<!doctype html>
-<html lang="en">
-  <body style="margin:0;padding:0;background:#f5f1e8;color:#2b211a;">
-    <div style="display:none;max-height:0;overflow:hidden;">New bridal inquiry from ${escapeHtml(data.name)}.</div>
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f5f1e8;padding:28px 12px;">
-      <tr>
-        <td align="center">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:720px;background:#fffdf7;border:1px solid #d8c8b0;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(84,62,39,.14);">
-            <tr>
-              <td style="padding:30px;background:#2b211a;color:#fffdf7;">
-                <div style="font:700 12px Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#d8c8b0;">${escapeHtml(WEBSITE_NAME)}</div>
-                <h1 style="margin:10px 0 0;font:500 34px Georgia,serif;line-height:1.05;color:#fffdf7;">New inquiry request</h1>
-                <p style="margin:12px 0 0;font:15px Arial,sans-serif;line-height:1.55;color:#efe7da;">A wedding or event inquiry was submitted from the website.</p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;background:#fffdf7;">
-                  ${buildRows(data)}
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:20px 30px;background:#eee7da;color:#6b5643;font:14px Arial,sans-serif;line-height:1.5;">
-                Reply directly to <a href="mailto:${escapeHtml(data.email)}" style="color:#543e27;font-weight:700;">${escapeHtml(data.email)}</a> to continue the consultation.
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>`;
-
-  return { subject, text, html };
+  return {
+    to: TO_EMAIL,
+    subject,
+    template: "contact",
+    data: {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      eventType: data.eventType,
+      eventDate: data.eventDate,
+      readyTime: data.readyTime,
+      location: data.location,
+      services: data.services.join(", "),
+      party: data.party,
+      trialNeeded: data.trialNeeded,
+      heardFrom: data.heardFrom,
+      notes: data.notes,
+      timestamp: new Date().toLocaleString("en-CA", { timeZone: "America/Vancouver", dateStyle: "medium", timeStyle: "short" }),
+      websiteName: data.websiteName,
+    },
+  };
 }
 
 module.exports = async function handler(req, res) {
@@ -270,7 +205,7 @@ module.exports = async function handler(req, res) {
     return sendJson(res, 429, "Too many inquiry attempts. Please try again later.");
   }
 
-  if (!process.env.RESEND_API_KEY || !process.env.RESEND_API_KEY.startsWith("re_")) {
+  if (!EMAIL_API_ENDPOINT || !EMAIL_API_KEY) {
     return sendJson(res, 500, "Inquiry email service is not configured.");
   }
 
@@ -288,25 +223,18 @@ module.exports = async function handler(req, res) {
   const { data, error } = validateAndSanitize(body);
   if (error) return sendJson(res, 400, error);
 
-  const email = buildEmail(data);
+  const emailPayload = buildEmailPayload(data);
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), RESEND_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), EMAIL_API_TIMEOUT_MS);
 
   try {
-    const response = await fetch(RESEND_ENDPOINT, {
+    const response = await fetch(EMAIL_API_ENDPOINT, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
         "Content-Type": "application/json",
+        "x-api-key": EMAIL_API_KEY,
       },
-      body: JSON.stringify({
-        from: FROM_EMAIL,
-        to: [TO_EMAIL],
-        reply_to: data.email,
-        subject: email.subject,
-        text: email.text,
-        html: email.html,
-      }),
+      body: JSON.stringify(emailPayload),
       signal: controller.signal,
     });
 
@@ -318,7 +246,7 @@ module.exports = async function handler(req, res) {
       if (response.status === 429) {
         return sendJson(res, 429, "Email service is busy. Please try again shortly.");
       }
-      return sendJson(res, 500, result.message || "Inquiry could not be sent.");
+      return sendJson(res, 500, result.message || result.error || "Inquiry could not be sent.");
     }
 
     return sendJson(res, 200, "Inquiry sent successfully.", true);

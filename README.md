@@ -13,14 +13,18 @@ Premium bridal makeup and hairstyling website for Defined by Dwija, a Burnaby-ba
 
 ## Local Preview
 
-Run a simple static server from this folder:
+Run the local Node server from this folder:
 
 ```powershell
-python -m http.server 4173
+npm start
 ```
 
 Then open:
 
 ```text
-http://localhost:4173/index.html
+http://127.0.0.1:5501/index.html
 ```
+
+Use this server for local inquiry form testing. A static server such as VS Code Live Server or
+`python -m http.server` can show the pages, but it cannot execute `api/inquiry.js`, so POST
+requests to `/api/inquiry` will fail.

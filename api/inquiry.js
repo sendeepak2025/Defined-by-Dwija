@@ -15,6 +15,8 @@ const ALLOWED_ORIGINS = new Set([
   "https://defined-by-dwija-iota.vercel.app",
   "http://localhost:4173",
   "http://127.0.0.1:4173",
+  "http://localhost:5501",
+  "http://127.0.0.1:5501",
 ]);
 
 const FIELD_LIMITS = {
@@ -43,6 +45,8 @@ function setSecurityHeaders(res, origin) {
   res.setHeader("X-Robots-Tag", "noindex");
   if (origin && ALLOWED_ORIGINS.has(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
     res.setHeader("Vary", "Origin");
   }
 }
@@ -186,8 +190,13 @@ module.exports = async function handler(req, res) {
   const origin = req.headers.origin;
   setSecurityHeaders(res, origin);
 
+  if (req.method === "OPTIONS") {
+    res.setHeader("Allow", "POST, OPTIONS");
+    return res.status(204).end();
+  }
+
   if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
+    res.setHeader("Allow", "POST, OPTIONS");
     return sendJson(res, 405, "Method not allowed.");
   }
 

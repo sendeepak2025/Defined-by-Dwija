@@ -1,5 +1,5 @@
 const WEBSITE_NAME = "Defined by Dwija";
-const TO_EMAIL = "jayvekariya2003@gmail.com";
+const TO_EMAIL = "hello@definedbydwija.com";
 const EMAIL_API_ENDPOINT =
   // process.env.INQUIRY_EMAIL_API_URL || "https://subconsciously-unsuppressible-precious.ngrok-free.dev/api/send";
   process.env.INQUIRY_EMAIL_API_URL || "https://mail-shared.varnsolutions.com/api/send";
